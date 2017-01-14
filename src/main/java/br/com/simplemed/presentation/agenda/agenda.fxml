@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" stylesheets="@agenda.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.simplemed.presentation.agenda.AgendaPresenter">
+   <children>
+      <TableView fx:id="agendaConsultas" stylesheets="@agenda.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columns>
+            <TableColumn fx:id="tcStatus" maxWidth="20.0" prefWidth="20.0" resizable="false" />
+            <TableColumn fx:id="tcHorario" editable="false" minWidth="60.0" prefWidth="60.0" resizable="false">
+               <graphic>
+                  <Label styleClass="text-header" text="Hora" />
+               </graphic></TableColumn>
+            <TableColumn fx:id="tcPaciente" editable="false" prefWidth="270.0" resizable="false">
+               <graphic>
+                  <Label styleClass="text-header" text="Paciente" />
+               </graphic></TableColumn>
+            <TableColumn fx:id="tcConfirmado" editable="false" prefWidth="34.0" resizable="false" sortable="false">
+               <graphic>
+                  <Label styleClass="text-header" text="Pres" />
+               </graphic></TableColumn>
+            <TableColumn fx:id="tcAtendido" editable="false" minWidth="-Infinity" prefWidth="40.0" resizable="false" sortable="false">
+               <graphic>
+                  <Label styleClass="text-header" text="Atend" />
+               </graphic></TableColumn>
+            <TableColumn fx:id="tcECG" editable="false" minWidth="-Infinity" prefWidth="34.0" resizable="false" sortable="false">
+               <graphic>
+                  <Label styleClass="text-header" text="ECG" />
+               </graphic></TableColumn>
+            <TableColumn fx:id="tcEvento" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>
