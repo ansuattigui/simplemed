@@ -3,24 +3,23 @@ package br.com.simplemed.business.registrations.boundary;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 /**
- *
+ * 
  * @author adam-bien.com
  */
 public class RegistrationService {
 
     private EntityManager em;
     private EntityManagerFactory emf;
-    private EntityTransaction et;
+//    private EntityTransaction et;
 
     @PostConstruct
     public void init() {
         this.emf = Persistence.createEntityManagerFactory("simplemed");
-        this.em = this.emf.createEntityManager();
-        this.et = this.em.getTransaction();
+        this.em = this.getEmf().createEntityManager();
+//        this.et = this.getEm().getTransaction();
     }
 /*
     public List<Attendee> all() {
@@ -52,4 +51,19 @@ public class RegistrationService {
         em.close();
     }
 */
+
+    /**
+     * @return the em
+     */
+    public EntityManager getEm() {
+        return em;
+    }
+
+    /**
+     * @return the emf
+     */
+    public EntityManagerFactory getEmf() {
+        return emf;
+    }
+
 }
