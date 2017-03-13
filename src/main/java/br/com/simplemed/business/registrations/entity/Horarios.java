@@ -5,6 +5,7 @@
 package br.com.simplemed.business.registrations.entity;
 
 import br.com.simplemed.business.registrations.boundary.RegistrationService;
+import br.com.simplemed.util.DateUtil;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ import javax.persistence.TypedQuery;
  */
 public class Horarios implements Initializable {
     
-//    private Medico agenda;
+    private Medico agenda;
 //    public static EstatConsultas estatistica;
     private static Date data;
     
@@ -36,12 +37,12 @@ public class Horarios implements Initializable {
     }
     
     private void initAgenda() {
-/*        EntityManager manager = JPAUtil.getEntityManager();
+        EntityManager manager = service.getEm();
         manager.getTransaction().begin();
         agenda = manager.find(Medico.class,1);
         manager.getTransaction().commit();
         manager.close();        
-*/    }
+    }
 
     public Boolean excluiHorario(Horario horario) {
         Boolean resultado = Boolean.FALSE;
@@ -88,27 +89,30 @@ public class Horarios implements Initializable {
     public ArrayList<Horario> getLista(Date data) {        
         EntityManager manager = service.getEm();
         
+        Date datahorai = DateUtil.startOfDay(data);
+        Date datahoraf = DateUtil.endOfDay(data);
+        
         String jpql = "select h from Horario h where h.datahora between :pdatahorai and :pdatahoraf order by h.dataHora";
         TypedQuery<Horario> query = manager.createQuery(jpql,Horario.class);
-        query.setParameter("pdatahorai", data  datahorai);
+        query.setParameter("pdatahorai", datahorai);
         query.setParameter("pdatahoraf",datahoraf);
-        ArrayList<HorarioAgenda> horarios = (ArrayList) query.getResultList();        
+        ArrayList<Horario> horarios = (ArrayList) query.getResultList();        
         manager.close();            
 //        estatistica = new EstatConsultas(horarios);        
         return horarios;
     }        
     
     
-    public ObservableList<HorarioAgenda> getObsLista() {        
-        ObservableList<HorarioAgenda> lista = FXCollections.observableArrayList(this.getLista());        
+    public ObservableList<Horario> getObsLista(Date data) {        
+        ObservableList<Horario> lista = FXCollections.observableArrayList(this.getLista(data));        
         return lista;
     }    
     
-    public ArrayList<HorarioAgenda> getListaT() {
+    public ArrayList<Horario> getListaT() {
         
-        Integer dia = Util.ldt(data).getDayOfMonth();
-        Integer mes = Util.ldt(data).getMonthValue();
-        Integer ano = Util.ldt(data).getYear();
+        Integer dia = DateUtil.ldt(data).getDayOfMonth();
+        Integer mes = DateUtil.ldt(data).getMonthValue();
+        Integer ano = DateUtil.ldt(data).getYear();
 
         Integer horaInicio = 0;
         Integer minutoInicio = 0;
@@ -116,7 +120,7 @@ public class Horarios implements Initializable {
         Integer minutoFim = 0;
         Integer intervalo = 0;
         
-        switch(Util.ldt(data).getDayOfWeek()) {
+        switch(DateUtil.ldt(data).getDayOfWeek()) {
             
             case SUNDAY: 
                 horaInicio = Integer.parseInt(agenda.getDomIni().substring(0,2));
@@ -172,31 +176,29 @@ public class Horarios implements Initializable {
         LocalDateTime inicio = LocalDateTime.of(ano, mes, dia, horaInicio, minutoInicio);
         LocalDateTime fim = LocalDateTime.of(ano, mes, dia, horaFim, minutoFim);
         
-        ArrayList<HorarioAgenda> listaT = new ArrayList<>();
+        ArrayList<Horario> listaT = new ArrayList<>();
         
         do {
-            HorarioAgenda tempHor = new HorarioAgenda();
-            tempHor.setData(data);
-            tempHor.setDataHora(Timestamp.valueOf(inicio));
-            tempHor.setPaciente("");
+            Horario tempHor = new Horario();
+            tempHor.setDatahora(Timestamp.valueOf(inicio));
+            tempHor.setPaciente(null);
             tempHor.setPresente(Boolean.FALSE);
             tempHor.setAtendido(Boolean.FALSE);
             listaT.add(tempHor);
             inicio = inicio.plusMinutes(intervalo);
-        } while (!inicio.isAfter(fim));
-        
+        } while (!inicio.isAfter(fim));      
         
         return listaT;
     }    
     
-    public ObservableList<HorarioAgenda> getObsListaT() {
+    public ObservableList<Horario> getObsListaT() {
         return FXCollections.observableArrayList(getListaT());
     }
     
-    public ObservableList<HorarioAgenda> getObsListaAgenda() {
+    public ObservableList<Horario> getObsListaAgenda() {
         
-        ArrayList<HorarioAgenda> listaA = getLista();
-        ArrayList<HorarioAgenda> listaB = getListaT();
+        ArrayList<Horario> listaA = getLista();
+        ArrayList<Horario> listaB = getListaT();
                
         Boolean achou;
         Boolean vazio;
@@ -245,16 +247,16 @@ public class Horarios implements Initializable {
                 listaB.add(indice,listaA.get(i));
             } 
         } 
-        ObservableList<HorarioAgenda> oLista = FXCollections.observableArrayList(listaB);        
+        ObservableList<Horario> oLista = FXCollections.observableArrayList(listaB);        
         return oLista;
     }
     
 
-    public ObservableList<HorarioAgenda> getObsListaAgenda(Boolean livres) { 
+    public ObservableList<Horario> getObsListaAgenda(Boolean livres) { 
         
-        ArrayList<HorarioAgenda> lista = new ArrayList<>();
-        ArrayList<HorarioAgenda> listaA = getLista();
-        ArrayList<HorarioAgenda> listaB = getListaT();
+        ArrayList<Horario> lista = new ArrayList<>();
+        ArrayList<Horario> listaA = getLista();
+        ArrayList<Horario> listaB = getListaT();
         
         if (!livres) {
             lista = listaA;
@@ -283,7 +285,7 @@ public class Horarios implements Initializable {
                 }
             }
         }
-        ObservableList<HorarioAgenda> oLista = FXCollections.observableArrayList(lista);        
+        ObservableList<Horario> oLista = FXCollections.observableArrayList(lista);        
         return oLista;
     }
 

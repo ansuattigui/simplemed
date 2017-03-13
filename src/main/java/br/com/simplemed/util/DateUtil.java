@@ -8,6 +8,7 @@ package br.com.simplemed.util;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
@@ -16,19 +17,32 @@ import java.util.Date;
  */
 public class DateUtil {
     
-    public Date startOfDay(Date data) {
+    public static Date startOfDay(Date data) {        
+        Instant i = Instant.ofEpochMilli(data.getTime());
+        LocalDateTime ldtStart = LocalDateTime.ofInstant(i, ZoneId.systemDefault()).toLocalDate().atStartOfDay();
         
-        Instant i1 = Instant.ofEpochMilli(data.getTime());
-        LocalDateTime ldt = LocalDateTime.ofInstant(i1, ZoneId.systemDefault());          
+        ZonedDateTime zdt = ldtStart.atZone(ZoneId.systemDefault());
+        Date sod = Date.from(zdt.toInstant());
         
-        Instant i2 = ldt.atStartOfDay(ZoneId.systemDefault()).toInstant();
-        Date data = Date.from(instant);           
-        
-        
-        Instant instant = Instant.ofEpochMilli(data.getTime());
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());                
-        
+        return sod;        
     }
     
+    public static Date endOfDay(Date data) {        
+        Instant i = Instant.ofEpochMilli(data.getTime());
+        LocalDateTime ldtEnd = LocalDateTime.ofInstant(i, ZoneId.systemDefault()).toLocalDate().plusDays(1).atStartOfDay();
+        
+        ZonedDateTime zdt = ldtEnd.atZone(ZoneId.systemDefault());
+        Date sod = Date.from(zdt.toInstant());
+        
+        return sod;        
+    }
+    
+    public static LocalDateTime ldt(Date data) {
+        
+        Instant i = Instant.ofEpochMilli(data.getTime());
+        LocalDateTime ldt = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+        
+        return ldt;
+    }
     
 }
